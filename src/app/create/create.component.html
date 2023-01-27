@@ -1,0 +1,13 @@
+<p>create works!</p>
+
+<form [formGroup]="form" (ngSubmit)="addPokemon()">
+  <div>
+    <label for="name">Nom du pokemon</label>
+    <input type="text" formControlName="name">
+  </div>
+  <div>
+    <label for="type">Type du pokemon</label>
+    <input type="text" formControlName="type">
+  </div>
+  <button type="submit">Ajouter Pokémon dans le Pokédex</button>
+</form>

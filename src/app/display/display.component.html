@@ -1,0 +1,10 @@
+<p>display works!</p>
+
+<div *ngIf="pokemons.length">
+  <ul>
+  <li *ngFor="let pokemon of pokemons">
+    <h1>{{pokemon.name}}</h1>
+    <p>{{pokemon.type}}</p>
+  </li>
+  </ul>
+</div>
