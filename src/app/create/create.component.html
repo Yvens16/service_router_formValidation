@@ -1,13 +1,20 @@
 <p>create works!</p>
 
-<form [formGroup]="form" (ngSubmit)="addPokemon()">
+<form [formGroup]="pokeForm" (ngSubmit)="addPokemon()" #myform="ngForm">
   <div>
     <label for="name">Nom du pokemon</label>
-    <input type="text" formControlName="name">
+    <input type="text" formControlName="name" />
   </div>
   <div>
     <label for="type">Type du pokemon</label>
-    <input type="text" formControlName="type">
+    <input type="text" formControlName="type" /><br />
+    <!-- <div *ngIf="type && type.invalid && type.touched">
+      Error on type
+    </div> -->
   </div>
   <button type="submit">Ajouter Pokémon dans le Pokédex</button>
+<!-- 
+  <div *ngIf="type!.errors?.['forbiddenType'] && type!.dirty">
+    Name cannot be Bob.
+  </div> -->
 </form>

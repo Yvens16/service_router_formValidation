@@ -1,7 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from '../data.service';
-import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, FormControl } from '@angular/forms';
+import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, FormControl, Validators } from '@angular/forms';
 import { PokemonType } from 'src/types/interface';
+
+
+// interface ISkill  {
+//   name: string,
+//   logo: string,
+//   site: string,
+// };
+interface IDeveloper {
+  name: string;
+  // ....,
+  skills: {name: string,logo: string,site: string,}[]; // ou utuliser une interface ISkill[]
+}
 
 @Component({
   selector: 'app-create',
@@ -10,46 +22,54 @@ import { PokemonType } from 'src/types/interface';
 })
 export class CreateComponent implements OnInit {
 
-
-
-  // <>
-  // emailFormControl = new FormControl('', {
-  //   validators: [Validators.required, Validators.email],
-  //   updateOn: 'submit'
-  // });
-  form = this.formBuilder.group({
+  pokeForm = this.formBuilder.group({
     name: [''],
-    type: new FormControl('', {validators: [onlyGoodTypesValidator], updateOn: 'submit'})
-  })
+    type: new FormControl('', { validators: [onlyGoodTypesValidator], updateOn: 'submit' })
+  }, { validators: Validators.required })
 
-  constructor(private pokemonService: DataService, private formBuilder: FormBuilder) { }
+  constructor(private pokemonService: DataService, private formBuilder: FormBuilder) {
+    // this.pokeForm.setValidators([Validators.required]);
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   addPokemon(): void {
-    this.pokemonService.addPokemon(this.form.value.name!, this.form.value.type as unknown as PokemonType);
-    this.form.reset();
+
+    // if (this.pokeForm.value.type!.length && this.pokeForm.value.name!.length) {
+
+    /// ########################
+    if (this.pokeForm.valid) {
+      this.pokemonService.addPokemon(this.pokeForm.value.name!, this.pokeForm.value.type as unknown as PokemonType);
+      // console.log('Form is valid');
+      this.pokeForm.reset();
+    } else {
+      // console.log('Form is not valid');
+    }
+    /// ########################
+
+    // } else {
+    //   console.log("Un input n'est pas rempli");
+    // }
+
   };
 
-  // export function forbiddenNameValidator(nameRe: RegExp): ValidatorFn {
-  //   return (input: AbstractControl): ValidationErrors | null => {
-  //     const forbidden = nameRe.test(input.value);
-  //     return forbidden ? {forbiddenName: {value: input.value}} : null;
-  //   };
-  // }
+  get type() {
+    return this.pokeForm.get('type');
+  }
 
 }
 
 
 function onlyGoodTypesValidator(input: AbstractControl): ValidationErrors | null {
-
-  const pokemonTypes: PokemonType[] = ["fire" , "water" , "grass" , "electric"];
-  console.log('input.value:', input.value)
-  if (!pokemonTypes.includes(input.value)) {
-  console.log("pas good")
-    return {forbiddenType: {value: input.value}};
-  } else {
-    console.log("good")
-    return null;
+  if (input.dirty) {
+    const pokemonTypes: PokemonType[] = ["fire", "water", "grass", "electric"];
+    if (!pokemonTypes.includes(input.value)) {
+      console.log("pas good")
+      return { forbiddenType: { value: input.value } };
+    } else {
+      console.log("good")
+      return null;
+    }
   }
+  return null
 }
